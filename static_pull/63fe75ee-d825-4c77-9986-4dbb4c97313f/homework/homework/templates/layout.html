@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div style="height: 48px;background-color: #2b669a">
+        <div style="float: right;color: white;font-weight: bold">
+            {{session['user_info']['nickname']}}
+            <a href="/logout">注销</a>
+        </div>
+    </div>
+    <div>
+        <div style="float: left;width: 20%;">
+            <ul>
+                <li><a href="/user_list">用户列表</a></li>
+                <li><a href="/upload">上传代码</a></li>
+            </ul>
+
+
+        </div>
+        <div style="float: left;width: 80%;">
+            {% block content %}{% endblock %}
+
+        </div>
+    </div>
+
+</body>
+</html>

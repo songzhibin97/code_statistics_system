@@ -1,0 +1,25 @@
+{% extends "layout.html"%}
+
+{% block content %}
+
+    <h1>用户代码量提交记录</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>行数</th>
+                <th>日期</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in record_list %}
+                <tr>
+                    <td>{{row.id}}</td>
+                    <td>{{row.line}}</td>
+                    <td>{{row.ctime}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

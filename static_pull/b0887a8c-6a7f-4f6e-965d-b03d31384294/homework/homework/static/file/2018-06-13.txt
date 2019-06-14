@@ -1,0 +1,33 @@
+yum remove uwsgi -y
+pip3 install uwsgi
+cat > /etc/uwsgi.ini <<EOF
+[uwsgi]
+uid = www
+gid = www
+pidfile = /tmp/uwsgi.pid
+chdir=/data/BBS
+module=BBS.wsgi:application
+socket=127.0.0.1:9090
+workers=5
+master=true
+vacuum=true
+daemonize=/var/log/uwsgi.log
+EOF
+which uwsgi 
+uwsgi --ini /etc/uwsgi.ini
+mkdir /data
+cp  BBS /data
+vim BBS/settings
+STATIC_ROOT= '/data/nginx_static/static'
+python3 manage.py collectstatic
+vim /apps/nginx/conf/nginx.conf
+location / {
+include  uwsgi_params;
+uwsgi_pass 127.0.0.1:9090;
+}
+location /static {
+root /data/nginx_static;
+} 
+/apps/nginx/sbin/nginx -t 
+/apps/nginx/sbin/nginx -s reload
+

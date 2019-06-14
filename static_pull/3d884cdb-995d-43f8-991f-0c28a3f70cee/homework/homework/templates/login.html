@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <meta name="viewport" content="width=device-width ,initial-scale=1">
+    <link rel="stylesheet" href="/static/bs/css/bootstrap.min.css">
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form action="" method="post">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" class="form-control" name="user" placeholder="用户名">
+                </div>
+
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" class="form-control" name="pwd" placeholder="密码">
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="col-md-12 btn btn-success login_btn" value="登陆">{{error}}
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

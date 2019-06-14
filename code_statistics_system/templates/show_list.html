@@ -1,0 +1,295 @@
+<!--继承母板-->
+{% extends 'base_title_bar.html' %}
+<!--修改母板中的块-->
+<!--title-->
+{% block title %}
+个人提交记录
+{% endblock %}
+<!--user-->
+{% block user %}
+{% if uid %}
+<li><a href="/show_list">当前用户:{{get_user_name(uid).get('username')}}</a></li>
+<li><a href="/logout">退出</a></li>
+{% else%}
+<li><a href="/login">登录</a></li>
+<li><a href="">注册</a></li>
+{% endif %}
+{% endblock %}
+<!--panel-->
+{% block panel %}
+<div class="panel panel-default">
+    <div class="panel-heading "><h3>代码管理列表</h3>
+        <div class="text-right">
+            <button id="button_model" class="btn btn-link" data-toggle="modal" data-target="#modal_frame">生成个人提交记录表
+            </button>
+        </div>
+        <form action="/push_file" method="post" enctype="multipart/form-data">
+
+        </form>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>代码行数</th>
+                <th>上传时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for details in data%}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{get_user_name(details.get('username')).get("username")}}</td>
+                <td>{{details.get('row')}}</td>
+                <td>{{details.get('time')}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--插入模态框-->
+    <div id="modal_frame" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+         aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content row">
+                <!--插入面板-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!--插入数据结构-->
+                        <!--折线图 占左边6-->
+                        <div class="col-lg-6">
+                            <div id="container" style="max-width:800px;height:400px"></div>
+                        </div>
+                        <!--柱状图 占右6-->
+                        <div class="col-lg-6">
+                            <div id="container2" style="min-width:400px;height:400px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="user" style="display: none">{{get_user_name(uid).get('username')}}</div>
+
+<script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
+<script>
+    var user = $("#user").text();
+    window.onload = function () {
+        $.ajax({
+            url: '/show_list',
+            type: 'POST',
+            dataType: 'json',
+            success(data) {
+                console.log()
+                var chart = Highcharts.chart('container', {
+                    title: {
+                        text: '个人上传代码折线图'
+                    },
+                    subtitle: {
+                        text: '数据来源：welcomebinhome'
+                    },
+                    yAxis: {
+                        title: {
+                            text: '代码行数'
+                        }
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        "categories":data[0]['start_point']
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle'
+                    },
+                    plotOptions: {
+                        series: {
+                            animation:false
+                        }
+                    },
+                    series: [{
+                        name: user,
+                        data: [15, 25, 3288]
+                    }],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 500
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom'
+                                }
+                            }
+                        }]
+                    }
+                });
+                var chart = Highcharts.chart('container2', {
+                    chart: {
+                        type: 'column',
+                        inverter:false
+                    },
+                    title: {
+                        text: '个人上传代码条形图'
+                    },
+                    subtitle: {
+                        text: '数据来源: welcomebinhome'
+                    },
+                    xAxis: {
+                        categories: user,
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '代码量K',
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: ' line'
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true,
+                                allowOverlap: true // 允许数据标签重叠
+                            }
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 100,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                        shadow: true
+                    },
+                    series: [{
+                        name: data[0]['start_point'],
+                        data: data[0]['histogram_data']
+                    }]
+                });
+            }
+        });
+    };
+
+
+</script>
+<!--&lt;!&ndash;折线图&ndash;&gt;-->
+<!--<script>-->
+<!--var chart = Highcharts.chart('container', {-->
+<!--title: {-->
+<!--text: '个人上传代码折线图'-->
+<!--},-->
+<!--subtitle: {-->
+<!--text: '数据来源：welcomebinhome'-->
+<!--},-->
+<!--yAxis: {-->
+<!--title: {-->
+<!--text: '代码行数'-->
+<!--}-->
+<!--},-->
+<!--legend: {-->
+<!--layout: 'vertical',-->
+<!--align: 'right',-->
+<!--verticalAlign: 'middle'-->
+<!--},-->
+<!--plotOptions: {-->
+<!--series: {-->
+<!--label: {-->
+<!--connectorAllowed: false-->
+<!--},-->
+<!--pointStart: 2010-->
+<!--}-->
+<!--},-->
+<!--series: [{-->
+<!--name: '安装，实施人员',-->
+<!--data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]-->
+<!--}],-->
+<!--responsive: {-->
+<!--rules: [{-->
+<!--condition: {-->
+<!--maxWidth: 500-->
+<!--},-->
+<!--chartOptions: {-->
+<!--legend: {-->
+<!--layout: 'horizontal',-->
+<!--align: 'center',-->
+<!--verticalAlign: 'bottom'-->
+<!--}-->
+<!--}-->
+<!--}]-->
+<!--}-->
+<!--});-->
+<!--</script>-->
+<!--&lt;!&ndash;柱状图&ndash;&gt;-->
+<!--<script>-->
+<!--var chart = Highcharts.chart('container2', {-->
+<!--chart: {-->
+<!--type: 'bar'-->
+<!--},-->
+<!--title: {-->
+<!--text: '个人上传代码条形图'-->
+<!--},-->
+<!--subtitle: {-->
+<!--text: '数据来源: welcomebinhome'-->
+<!--},-->
+<!--xAxis: {-->
+<!--categories: ['大洋洲'],-->
+<!--title: {-->
+<!--text: null-->
+<!--}-->
+<!--},-->
+<!--yAxis: {-->
+<!--min: 0,-->
+<!--title: {-->
+<!--text: '代码量K',-->
+<!--align: 'high'-->
+<!--},-->
+<!--labels: {-->
+<!--overflow: 'justify'-->
+<!--}-->
+<!--},-->
+<!--tooltip: {-->
+<!--valueSuffix: ' K'-->
+<!--},-->
+<!--plotOptions: {-->
+<!--bar: {-->
+<!--dataLabels: {-->
+<!--enabled: true,-->
+<!--allowOverlap: true // 允许数据标签重叠-->
+<!--}-->
+<!--}-->
+<!--},-->
+<!--legend: {-->
+<!--layout: 'vertical',-->
+<!--align: 'right',-->
+<!--verticalAlign: 'top',-->
+<!--x: -40,-->
+<!--y: 100,-->
+<!--floating: true,-->
+<!--borderWidth: 1,-->
+<!--backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),-->
+<!--shadow: true-->
+<!--},-->
+<!--series: [{-->
+<!--name: '1800 年',-->
+<!--data: [107, 31, 635, 203, 2]-->
+<!--}]-->
+<!--});-->
+<!--</script>-->
+{% endblock %}

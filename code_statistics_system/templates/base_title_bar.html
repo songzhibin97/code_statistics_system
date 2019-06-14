@@ -1,0 +1,52 @@
+<!--母板简介 -->
+<!--定义了两个块 分别为 title 以及 panel 分别为标题记忆面板后的输出内容-->
+<!--引入 jquery 以及 bootstrap 如需要需要更改 url使用-->
+
+<!DOCTYPE html>
+<html lang="zh-CH">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {#引入bootstrap样式css文件#}
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <script src="/static/jquery-3.3.1.js"></script>
+</head>
+<body>
+<!--引入标题栏-->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <div class="navbar-brand">代码管理系统</div>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a>Link</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="">Link</a></li>
+         {% block user %}{% endblock %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<!--引入面板-->
+<div class="panel panel-default">
+  <div class="panel-body">
+    {% block panel %} {% endblock %}
+  </div>
+</div>
+{#引入jQuery js文件#}
+
+{#引入bootstrap样式js文件#}
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<style>
+    .navbar {
+        /*导航和面板的间距*/
+        margin: 0;
+    }
+</style>
+</body>
+</html>
